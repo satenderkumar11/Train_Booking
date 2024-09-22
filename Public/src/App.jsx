@@ -6,6 +6,8 @@ import "./App.css";
 
 const App = () => {
   const [seats, setSeats] = useState([]);
+  const backend_url = "https://train-booking-v5te.onrender.com";
+  // const backend_url = "http://localhost:3000/";
 
   useEffect(() => {
     fetchData();
@@ -13,9 +15,7 @@ const App = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:3000/api/train/001/status"
-      );
+      const response = await fetch(`${backend_url}api/train/001/status`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -28,33 +28,32 @@ const App = () => {
   };
 
   const reserveSeats = async (numSeats) => {
-    try{
+    try {
+      const response = await fetch(`${backend_url}api/train/001/book`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          seats: numSeats,
+        }),
+      });
 
-      const response = await fetch("http://localhost:3000/api/train/001/book", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        seats: numSeats,
-      }),
-    })
-
-    const data = await response.json();
-        if (!response.ok) {
-          alert(`Error: ${response.message}`);
-        } else {
-          console.log("Booking successful:", data);
-          setSeats(data.seatLayout);
-          alert(
-            `Seats booked successfully: ${data.bookedSeats
-              .map((seat) => seat.number)
-              .join(", ")}`
-          );
-        }
-    }catch(error) {
-        console.error("Error booking train:", error);
-      };
+      const data = await response.json();
+      if (!response.ok) {
+        alert(`Error: ${response.message}`);
+      } else {
+        console.log("Booking successful:", data);
+        setSeats(data.seatLayout);
+        alert(
+          `Seats booked successfully: ${data.bookedSeats
+            .map((seat) => seat.number)
+            .join(", ")}`
+        );
+      }
+    } catch (error) {
+      console.error("Error booking train:", error);
+    }
 
     // const updatedSeats = [...seats];
     // let seatsToReserve = [];
