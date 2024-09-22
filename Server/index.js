@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 
 app.use(
   cors({
-    origin: true,
+    origin: "https://train-booking-omega.vercel.app/",
   })
 );
 
