@@ -1,0 +1,89 @@
+/* App.css */
+.app-container {
+  text-align: center;
+  padding: 20px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: Arial, sans-serif;
+}
+
+.seats-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+  border: 2px solid #333;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.seat-row {
+  display: flex;
+  margin: 5px 0;
+}
+
+.seat {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #333;
+  margin: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  font-weight: bold;
+  color: #fff;
+  border-radius: 5px;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.available {
+  background-color: #7f8c8d;
+}
+
+.booked {
+  background-color: #e74c3c;
+  cursor: not-allowed;
+}
+
+.user-booked {
+  background-color: #27ae60;
+}
+
+.seat:hover {
+  transform: scale(1.1);
+}
+
+.reservation-form {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+input {
+  padding: 5px;
+  border: 1px solid #333;
+  border-radius: 5px;
+}
+
+button {
+  padding: 5px 15px;
+  border: none;
+  background-color: #3498db;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #2980b9;
+}
