@@ -6,7 +6,7 @@ import "./App.css";
 
 const App = () => {
   const [seats, setSeats] = useState([]);
-  const backend_url = "https://train-booking-v5te.onrender.com";
+  const backend_url = "https://train-booking-v5te.onrender.com/";
   // const backend_url = "http://localhost:3000/";
 
   useEffect(() => {
