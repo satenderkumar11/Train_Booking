@@ -1,11 +1,15 @@
 // src/App.js
 import React, { useEffect, useRef, useState } from "react";
 import SeatMap from "./components/SeatMap";
+import SeatMapShimmer from "./components/shimmer/SeatMapShimmer";
+
 import ReservationForm from "./components/ReservationForm";
 import "./App.css";
 
 const App = () => {
   const [seats, setSeats] = useState([]);
+  const [showSeatMapShimmer, setShowSeatMapShimmer] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
   const backend_url = "https://train-booking-v5te.onrender.com/";
   // const backend_url = "http://localhost:3000/";
 
@@ -14,6 +18,7 @@ const App = () => {
   }, []);
 
   const fetchData = async () => {
+    setIsFetching(true);
     try {
       const response = await fetch(`${backend_url}api/train/001/status`);
       if (!response.ok) {
@@ -21,13 +26,17 @@ const App = () => {
       }
       const data = await response.json();
       setSeats(data);
+      setShowSeatMapShimmer(false);
       console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error);
+    } finally {
+      setIsFetching(false);
     }
   };
 
   const reserveSeats = async (numSeats) => {
+    setIsFetching(true);
     try {
       const response = await fetch(`${backend_url}api/train/001/book`, {
         method: "POST",
@@ -53,69 +62,50 @@ const App = () => {
       }
     } catch (error) {
       console.error("Error booking train:", error);
+    } finally {
+      setIsFetching(false);
     }
+  };
 
-    // const updatedSeats = [...seats];
-    // let seatsToReserve = [];
+  const handleReset = async () => {
+    setIsFetching(true);
 
-    // for (let i = 0; i < updatedSeats.length; i++) {
-    //   const availableSeatsInRow = updatedSeats[i].filter(
-    //     (seat) => !seat.isBooked
-    //   );
-    //   if (availableSeatsInRow.length >= numSeats) {
-    //     seatsToReserve = availableSeatsInRow.slice(0, numSeats);
-    //     break;
-    //   }
-    // }
-
-    // if (seatsToReserve.length === 0) {
-    //   for (let i = 0; i < updatedSeats.length; i++) {
-    //     for (let seat of updatedSeats[i]) {
-    //       if (!seat.isBooked && seatsToReserve.length < numSeats) {
-    //         seatsToReserve.push(seat);
-    //       }
-    //     }
-    //     if (seatsToReserve.length === numSeats) break;
-    //   }
-    // }
-
-    // if (seatsToReserve.length === numSeats) {
-    //   seatsToReserve.forEach((seat) => {
-    //     for (let row of updatedSeats) {
-    //       const seatToUpdate = row.find(
-    //         (s) => s.seatNumber === seat.seatNumber
-    //       );
-    //       if (seatToUpdate) {
-    //         seatToUpdate.isBooked = true;
-    //         seatToUpdate.bookedByUser = true;
-    //       }
-    //     }
-    //   });
-
-    //   setSeats(updatedSeats);
-    //   alert(
-    //     `Seats booked successfully: ${seatsToReserve
-    //       .map((seat) => seat.seatNumber)
-    //       .join(", ")}`
-    //   );
-    // } else {
-    //   alert("Not enough seats available.");
-    // }
+    try {
+      const response = await fetch(`${backend_url}api/train/001/reset`);
+      const data = await response.json();
+      alert("Successfully reset");
+      setSeats(data);
+    } catch (error) {
+      console.error("Error reset", error);
+      alert("Error reset", error);
+    } finally {
+      setIsFetching(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Navbar */}
-      <nav className="bg-blue-600 text-white py-4 shadow-md">
-        <div className="container mx-auto flex justify-center">
+      <nav className="bg-blue-600 text-white py-4 shadow-md flex">
+        <div className="container mx-auto flex ">
           <h1 className="text-2xl font-bold">Train Seat Reservation</h1>
         </div>
+        <button
+          onClick={handleReset}
+          disabled={isFetching}
+          className="px-8 py-2 mr-2 bg-blue-500 text-white rounded-md hover:bg-blue-800 transition"
+        >
+          Reset
+        </button>
       </nav>
-
+      <div className="text-neutral-600 text-center text-3xl font-bold pt-4">
+        {" "}
+        Train No. 12425
+      </div>
       {/* Main Content */}
-      <div className="flex flex-col items-center justify-center p-6">
-        <SeatMap seats={seats} />
-        <ReservationForm onReserve={reserveSeats} />
+      <div className="flex flex-col items-center justify-center p-4">
+        {showSeatMapShimmer ? <SeatMapShimmer /> : <SeatMap seats={seats} />}
+        <ReservationForm onReserve={reserveSeats} isFetching={isFetching} />
       </div>
     </div>
   );

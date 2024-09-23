@@ -1,5 +1,6 @@
 const Train = require("../models/train");
 const mongoose = require("mongoose");
+const { bookSeats } = require("../utils/bookSeats");
 
 exports.getTrainStatus = async (req, res) => {
   try {
@@ -9,6 +10,7 @@ exports.getTrainStatus = async (req, res) => {
     }
     res.json(train.seatLayout);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -38,10 +40,11 @@ exports.bookTickets = async (req, res) => {
       session.endSession();
       return res.status(400).json({ message: "Not enough seats available" });
     }
+    console.log("booked", bookedSeats);
     const reservedSeats = [];
-    bookedSeats.forEach(({ row, seat }) => {
-      train.seatLayout[row].seats[seat].isBooked = true;
-      reservedSeats.push(train.seatLayout[row].seats[seat]);
+    bookedSeats.forEach(({ row, index }) => {
+      train.seatLayout[row].seats[index].isBooked = true;
+      reservedSeats.push(train.seatLayout[row].seats[index]);
     });
 
     console.log(bookedSeats);
@@ -58,43 +61,26 @@ exports.bookTickets = async (req, res) => {
     await session.abortTransaction();
     session.endSession();
     res.status(500).json({ message: "Server error" });
+    console.error(error);
   }
 };
 
-function bookSeats(seatLayout, seatsRequired) {
-  const bookedSeats = [];
-
-  // Try to book in a single row
-  for (let i = 0; i < seatLayout.length; i++) {
-    const row = seatLayout[i].seats;
-    const availableInRow = [];
-    row.forEach((seat, index) => {if(!seat.isBooked)availableInRow.push(index);});
-
-    console.log(availableInRow);
-    if (availableInRow.length >= seatsRequired) {
-      for (let j = 0; j < seatsRequired; j++) {
-        const seatIndex = availableInRow[j];
-        bookedSeats.push({
-          row: i,
-          seat: seatIndex,
-          number: row[seatIndex].number,
-        });
-      }
-      return bookedSeats;
+exports.handleReset = async (req, res) => {
+  try {
+    const train = await Train.findOne({ trainId: req.params.trainId });
+    if (!train) {
+      return res.status(404).json({ message: "Train not found" });
     }
-  }
+    train.seatLayout.forEach((row) => {
+      row.seats.forEach((seat) => {
+        seat.isBooked = false;
+      });
+    });
 
-  // If not possible in a single row, book nearby seats
-  let remainingSeats = seatsRequired;
-  for (let i = 0; i < seatLayout.length && remainingSeats > 0; i++) {
-    const row = seatLayout[i].seats;
-    for (let j = 0; j < row.length && remainingSeats > 0; j++) {
-      if (!row[j].isBooked) {
-        bookedSeats.push({ row: i, seat: j, number: row[j].number });
-        remainingSeats--;
-      }
-    }
+    await train.save();
+    res.json(train.seatLayout);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server error" });
   }
-
-  return remainingSeats === 0 ? bookedSeats : [];
-}
+};

@@ -1,7 +1,7 @@
 // src/components/ReservationForm.js
 import React, { useState } from "react";
 
-const ReservationForm = ({ onReserve }) => {
+const ReservationForm = ({ onReserve, isFetching }) => {
   const [numSeats, setNumSeats] = useState("");
 
   const handleReserveClick = (event) => {
@@ -27,6 +27,7 @@ const ReservationForm = ({ onReserve }) => {
       />
       <button
         type="submit"
+        disabled={isFetching}
         className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
       >
         Reserve Seats
