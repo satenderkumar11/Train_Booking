@@ -17,7 +17,7 @@ app.use(
   cors({
     origin: [
       "https://train-booking-satender-kumars-projects-6ee3bd3d.vercel.app",
-      "https://train-booking-omega.vercel.app/",
+      "https://train-booking-omega.vercel.app",
     ],
     // origin: true,
   })
