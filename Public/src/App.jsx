@@ -94,7 +94,7 @@ const App = () => {
       {/* Navbar with title and reset button */}
       <nav className="bg-blue-600 text-white py-4 shadow-md flex">
         <div className="container mx-auto flex ">
-          <h1 className="text-2xl font-bold">Train Seat Reservation</h1>
+          <h1 className="text-2xl pl-4 font-bold">Train Seat Reservation</h1>
         </div>
         <button
           onClick={handleReset}
