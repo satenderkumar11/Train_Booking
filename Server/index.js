@@ -18,6 +18,7 @@ app.use(
     origin: [
       "https://train-booking-satender-kumars-projects-6ee3bd3d.vercel.app",
       "https://train-booking-omega.vercel.app",
+      "http://localhost:5173",
     ],
     // origin: true,
   })

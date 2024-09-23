@@ -12,7 +12,8 @@ const App = () => {
 
   const [isFetching, setIsFetching] = useState(false);
 
-  const backend_url = "https://train-booking-v5te.onrender.com/";
+  // const backend_url = "https://train-booking-v5te.onrender.com/";
+  const backend_url = "http://localhost:3000/";
 
   // Fetch seat data on component mount
   useEffect(() => {

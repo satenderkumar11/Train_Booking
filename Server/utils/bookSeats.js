@@ -40,7 +40,7 @@ exports.bookSeats = (seatLayout, seatsRequired) => {
       closestGroup.forEach((seat) => {
         bookedSeats.push({
           row: i,
-          seat: seat.index,
+          index: seat.index,
           number: seat.number,
         });
       });
