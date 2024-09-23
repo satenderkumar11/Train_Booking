@@ -55,7 +55,7 @@ const App = () => {
 
       const data = await response.json();
       if (!response.ok) {
-        alert(`Error: ${response.message}`);
+        alert(`Error: ${data.message}`);
       } else {
         console.log("Booking successful:", data);
         setSeats(data.seatLayout);
