@@ -1,22 +1,25 @@
-// src/App.js
 import React, { useEffect, useRef, useState } from "react";
 import SeatMap from "./components/SeatMap";
 import SeatMapShimmer from "./components/shimmer/SeatMapShimmer";
-
 import ReservationForm from "./components/ReservationForm";
 import "./App.css";
 
 const App = () => {
+  // State to store seat layout data
   const [seats, setSeats] = useState([]);
-  const [showSeatMapShimmer, setShowSeatMapShimmer] = useState(true);
-  const [isFetching, setIsFetching] = useState(false);
-  const backend_url = "https://train-booking-v5te.onrender.com/";
-  // const backend_url = "http://localhost:3000/";
 
+  const [showSeatMapShimmer, setShowSeatMapShimmer] = useState(true);
+
+  const [isFetching, setIsFetching] = useState(false);
+
+  const backend_url = "https://train-booking-v5te.onrender.com/";
+
+  // Fetch seat data on component mount
   useEffect(() => {
     fetchData();
   }, []);
 
+  // Function to fetch seat status data from the backend
   const fetchData = async () => {
     setIsFetching(true);
     try {
@@ -35,6 +38,7 @@ const App = () => {
     }
   };
 
+  // Function to reserve a specified number of seats
   const reserveSeats = async (numSeats) => {
     setIsFetching(true);
     try {
@@ -67,6 +71,7 @@ const App = () => {
     }
   };
 
+  // Function to reset seat reservations to the initial state
   const handleReset = async () => {
     setIsFetching(true);
 
@@ -85,7 +90,7 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Navbar */}
+      {/* Navbar with title and reset button */}
       <nav className="bg-blue-600 text-white py-4 shadow-md flex">
         <div className="container mx-auto flex ">
           <h1 className="text-2xl font-bold">Train Seat Reservation</h1>
@@ -102,7 +107,7 @@ const App = () => {
         {" "}
         Train No. 12425
       </div>
-      {/* Main Content */}
+      {/* Main content with seat map and reservation form */}
       <div className="flex flex-col items-center justify-center p-4">
         {showSeatMapShimmer ? <SeatMapShimmer /> : <SeatMap seats={seats} />}
         <ReservationForm onReserve={reserveSeats} isFetching={isFetching} />
